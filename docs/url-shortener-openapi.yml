@@ -1,0 +1,67 @@
+swagger: "2.0"
+info:
+  title: "URL shortener API"
+  description: "This is a url minifier API."
+  version: "1.0.0"
+host: "localhost:5000"
+basePath: "/"
+schemes:
+- "http"
+paths:
+  /minified:
+    post:
+      operationId: "minify"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "The URL to perform a minification on"
+        required: true
+        schema:
+          $ref: "#/definitions/PostRequest"
+      responses:
+        "200":
+          description: "Successful minification"
+          schema:
+            $ref: '#/definitions/PostResponse'
+        "405":
+          description: "Validation exception"
+  /minified/{id}:
+    get:
+      operationId: "minify"
+      parameters:
+      - in: "path"
+        name: "id"
+        description: "The minified URL ID"
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: "Successfully resolved URL"
+          schema:
+            $ref: '#/definitions/GetResponse'
+        "500":
+          description: "Internal server error"
+definitions:
+  PostRequest:
+    type: "object"
+    properties:
+      url:
+        type: "string"
+        description: "The text to perform the prediction on"
+  PostResponse:
+    type: "object"
+    properties:
+      id:
+        type: "string"
+        description: "The minified URL ID"
+  GetResponse:
+    type: "object"
+    properties:
+      url:
+        type: "string"
+        description: "The resolved URL"
