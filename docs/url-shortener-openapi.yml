@@ -31,7 +31,6 @@ paths:
           description: "Validation exception"
   /minified/{id}:
     get:
-      operationId: "minify"
       parameters:
       - in: "path"
         name: "id"
