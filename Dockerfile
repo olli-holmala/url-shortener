@@ -12,4 +12,4 @@ COPY . .
 
 EXPOSE 5000
 
-CMD [ "flask", "run" ]
+CMD [ "python", "./persistence/db_init.py" ]

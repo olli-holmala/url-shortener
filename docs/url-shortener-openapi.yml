@@ -29,6 +29,8 @@ paths:
             $ref: '#/definitions/PostResponse'
         "405":
           description: "Validation exception"
+          schema:
+            $ref: '#/definitions/ErrorResponse'
   /minified/{id}:
     get:
       parameters:
@@ -45,22 +47,42 @@ paths:
             $ref: '#/definitions/GetResponse'
         "500":
           description: "Internal server error"
+          schema:
+            $ref: '#/definitions/ErrorResponse'
 definitions:
   PostRequest:
     type: "object"
     properties:
-      url:
+      minified_url:
         type: "string"
         description: "The text to perform the prediction on"
+      status:
+        type: "integer"
+        description: "The HTTP status code"
   PostResponse:
     type: "object"
     properties:
       id:
         type: "string"
-        description: "The minified URL ID"
+        description: "The minified URL ID for this API"
+      status:
+        type: "integer"
+        description: "The HTTP status code"
   GetResponse:
     type: "object"
     properties:
-      url:
+      resolved_url:
         type: "string"
-        description: "The resolved URL"
+        description: "The HTTP resolved URL"
+      status:
+        type: "integer"
+        description: "The HTTP status code"
+  ErrorResponse:
+    type: "object"
+    properties:
+      reason:
+        type: "string"
+        description: "The reason for the error"
+      status:
+        type: "integer"
+        description: "The HTTP status code"

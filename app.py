@@ -1,9 +1,10 @@
 import json
 
-from shortener import shorten, resolve
+from core.shortener import shorten, resolve
 #import uuid
 from flask import Flask, request, jsonify
 import sqlite3
+from persistence.db_init import init_db
 
 app = Flask(__name__)
 
@@ -13,15 +14,16 @@ def post_url():
     connection = sqlite3.connect('urls.db')
     cursor = connection.cursor()
 
+    # Would need to check that this complies with our openapi expected structure.
     data = request.json
     long_url = data["url"]
-    cursor.execute(f""" INSERT INTO full_urls (url) 
+    # This would still need a check of the DB to see if the URL already exists.
+    cursor.execute(f""" REPLACE INTO full_urls (url) 
                         VALUES (?);""", (long_url,))
     uuid = cursor.lastrowid
-    print(f"UUID: {uuid}")
     minifiedId = shorten(uuid)
     connection.commit()
-    return jsonify(status=200, url=f"http://localhost:5000/minified/{minifiedId}")
+    return jsonify(status=200, minified_url=f"http://localhost:5000/minified/{minifiedId}")
 
 @app.route('/minified/<uuid>', methods=['GET'])
 def resolve_url(uuid):
@@ -30,10 +32,10 @@ def resolve_url(uuid):
 
     record_id = resolve(uuid)
     cursor.execute(f"SELECT url FROM full_urls WHERE id=(?);", (record_id,))
-    record = cursor.fetchone()
-    return jsonify(status=200, url=record)
+    records = cursor.fetchone()
+    if(len(records) == 0):
+      return(jsonify(status=500, reason=f"Internal Server error resolving {uuid}"))
+    return jsonify(status=200, resolved_url=records[0])
 
 if __name__ == "__main__":
-    conn = sqlite3.connect('test.db')
-    print("Opened database successfully")
     app.run()

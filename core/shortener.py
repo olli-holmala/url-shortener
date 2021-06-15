@@ -1,4 +1,10 @@
 
+"""
+Implementation from: https://www.geeksforgeeks.org/how-to-design-a-tiny-url-or-url-shortener/
+Will map a database ID to a alpahumeric value, which then serves as the ID
+for that resource in our API.
+"""
+
 def shorten(id):
     map = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
     shortURL = ""
